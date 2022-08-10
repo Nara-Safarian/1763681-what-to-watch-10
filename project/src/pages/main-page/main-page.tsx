@@ -1,12 +1,15 @@
-import FilmCard from '../../components/film-card/film-card';
+import FilmList from '../../components/film-list/film-list';
+import { Film } from '../../types/film';
 
 type MaingPageProps = {
-  filmTilte: string;
+  filmTitle: string;
   filmGenre: string;
   releaseDate: string;
+  films: Film[];
+
 }
 
-function MainPage({filmTilte, filmGenre, releaseDate}: MaingPageProps): JSX.Element {
+function MainPage({filmTitle, filmGenre, releaseDate, films}: MaingPageProps): JSX.Element {
   return (
     <>
       <div className="visually-hidden">
@@ -43,7 +46,7 @@ function MainPage({filmTilte, filmGenre, releaseDate}: MaingPageProps): JSX.Elem
 
       <section className="film-card">
         <div className="film-card__bg">
-          <img src="img/bg-the-grand-budapest-hotel.jpg" alt={filmTilte} />
+          <img src="img/bg-the-grand-budapest-hotel.jpg" alt={filmTitle} />
         </div>
 
         <h1 className="visually-hidden">WTW</h1>
@@ -72,11 +75,11 @@ function MainPage({filmTilte, filmGenre, releaseDate}: MaingPageProps): JSX.Elem
         <div className="film-card__wrap">
           <div className="film-card__info">
             <div className="film-card__poster">
-              <img src="img/the-grand-budapest-hotel-poster.jpg" alt={`${filmTilte} poster`} width="218" height="327" />
+              <img src="img/the-grand-budapest-hotel-poster.jpg" alt={`${filmTitle} poster`} width="218" height="327" />
             </div>
 
             <div className="film-card__desc">
-              <h2 className="film-card__title">{filmTilte}</h2>
+              <h2 className="film-card__title">{filmTitle}</h2>
               <p className="film-card__meta">
                 <span className="film-card__genre">{filmGenre}</span>
                 <span className="film-card__year">{releaseDate}</span>
@@ -140,26 +143,7 @@ function MainPage({filmTilte, filmGenre, releaseDate}: MaingPageProps): JSX.Elem
           </ul>
 
           <div className="catalog__films-list">
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
-            <FilmCard />
+            <FilmList films={films} />
           </div>
 
           <div className="catalog__more">
