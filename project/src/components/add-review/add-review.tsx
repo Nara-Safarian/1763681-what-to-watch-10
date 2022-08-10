@@ -4,7 +4,7 @@ function AddReview(): JSX.Element {
 
   const [reviewText, setReviewText] = useState('');
 
-  const reviewChangeHandle = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleReviewChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = evt.target.value;
     setReviewText(value);
   };
@@ -48,7 +48,7 @@ function AddReview(): JSX.Element {
         </div>
 
         <div className="add-review__text">
-          <textarea onChange={reviewChangeHandle} value={reviewText} className="add-review__textarea" name="review-text" id="review-text" placeholder="Review text"></textarea>
+          <textarea onChange={handleReviewChange} value={reviewText} className="add-review__textarea" name="review-text" id="review-text" placeholder="Review text"></textarea>
           <div className="add-review__submit">
             <button className="add-review__btn" type="submit">Post</button>
           </div>

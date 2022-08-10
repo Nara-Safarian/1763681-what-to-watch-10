@@ -1,6 +1,7 @@
 import { Details } from './details';
 import { Overview } from './overview';
 import { Review } from './review';
+import { Video } from './video';
 
 export type Film = {
   id: number,
@@ -11,4 +12,5 @@ export type Film = {
   overview: Overview,
   details: Details,
   reviews: Review[],
+  video: Video
 }

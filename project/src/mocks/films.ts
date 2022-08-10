@@ -2,6 +2,7 @@ import { Film } from '../types/film';
 import { fantasticBeastsDetails, bohemianRhapsodyDetails, macbethDetails, aviatorDetails} from './details';
 import { fantasticBeastsOverview, bohemianRhapsodyOverview, macbethOverview, aviatorOverview } from './overview';
 import { reviews } from './reviews';
+import { video } from './video';
 
 export const films: Film[] = [
   {
@@ -12,7 +13,8 @@ export const films: Film[] = [
     releaseYear: '2018',
     overview: fantasticBeastsOverview,
     details: fantasticBeastsDetails,
-    reviews
+    reviews,
+    video
   },
   {
     id: 678,
@@ -22,7 +24,8 @@ export const films: Film[] = [
     releaseYear: '2018',
     overview: bohemianRhapsodyOverview,
     details: bohemianRhapsodyDetails,
-    reviews
+    reviews,
+    video
   },
   {
     id: 3545,
@@ -32,7 +35,8 @@ export const films: Film[] = [
     releaseYear: '2015',
     overview: macbethOverview,
     details: macbethDetails,
-    reviews
+    reviews,
+    video
   },
   {
     id: 68768,
@@ -42,7 +46,8 @@ export const films: Film[] = [
     releaseYear: '2004',
     overview: aviatorOverview,
     details: aviatorDetails,
-    reviews
+    reviews,
+    video
   },
   {
     id: 456,
@@ -52,7 +57,8 @@ export const films: Film[] = [
     releaseYear: '2018',
     overview: fantasticBeastsOverview,
     details: fantasticBeastsDetails,
-    reviews
+    reviews,
+    video
   },
   {
     id: 98865,
@@ -62,7 +68,8 @@ export const films: Film[] = [
     releaseYear: '2018',
     overview: bohemianRhapsodyOverview,
     details: bohemianRhapsodyDetails,
-    reviews
+    reviews,
+    video
   },
   {
     id: 3356,
@@ -72,7 +79,8 @@ export const films: Film[] = [
     releaseYear: '2015',
     overview: macbethOverview,
     details: macbethDetails,
-    reviews
+    reviews,
+    video
   },
   {
     id: 576687,
@@ -82,5 +90,6 @@ export const films: Film[] = [
     releaseYear: '2004',
     overview: aviatorOverview,
     details: aviatorDetails,
-    reviews
+    reviews,
+    video
   }];

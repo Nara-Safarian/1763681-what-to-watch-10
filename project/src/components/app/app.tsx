@@ -15,10 +15,9 @@ type AppProps = {
   filmGenre: string;
   releaseDate: string;
   films: Film[];
-  activeFilm: Film;
 }
 
-function App({filmTitle, filmGenre, releaseDate, films, activeFilm}: AppProps): JSX.Element {
+function App({filmTitle, filmGenre, releaseDate, films}: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
@@ -53,11 +52,17 @@ function App({filmTitle, filmGenre, releaseDate, films, activeFilm}: AppProps): 
         />
         <Route
           path={AppRoute.AddReview}
-          element={<AddReviewPage posterSrc={activeFilm.poster} filmTitle={activeFilm.title} />}
+          element={<AddReviewPage posterSrc={films[0].poster} filmTitle={films[0].title} />}
         />
         <Route
           path={AppRoute.Player}
-          element={<PlayerPage filmTitle={activeFilm.title} runTime={activeFilm.details.runTime} />}
+          element={(
+            <PlayerPage
+              filmTitle={films[0].title}
+              runTime={films[0].details.runTime}
+              videoUrl={films[0].video.url}
+            />
+          )}
         />
         <Route path='*'
           element={<NotFoundPage />}

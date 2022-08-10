@@ -14,7 +14,6 @@ root.render(
       filmGenre='Drama'
       releaseDate='2014'
       films={films}
-      activeFilm={films[0]}
     />
   </React.StrictMode>,
 );
