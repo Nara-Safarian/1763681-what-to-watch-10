@@ -48,7 +48,11 @@ function App({filmTitle, filmGenre, releaseDate, films}: AppProps): JSX.Element 
         />
         <Route
           path={AppRoute.Film}
-          element={<FilmPage />}
+          element={(
+            <FilmPage
+              film={films[0]}
+            />
+          )}
         />
         <Route
           path={AppRoute.AddReview}
