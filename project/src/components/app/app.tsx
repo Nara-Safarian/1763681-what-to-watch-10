@@ -1,5 +1,5 @@
 import {Route, BrowserRouter, Routes} from 'react-router-dom';
-import {AppRoute, AuthorizationStatus} from '../../const';
+import {AppRoute, AuthorizationStatus} from '../../constants';
 import MainPage from '../../pages/main-page/main-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import SignInPage from '../../pages/sign-in-page/sign-in-page';
@@ -28,7 +28,6 @@ function App({filmTitle, filmGenre, releaseDate, films}: AppProps): JSX.Element 
               filmTitle={filmTitle}
               filmGenre={filmGenre}
               releaseDate={releaseDate}
-              films={films}
             />
           }
         />
