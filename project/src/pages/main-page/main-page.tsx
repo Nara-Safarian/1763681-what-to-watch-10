@@ -1,15 +1,20 @@
+import { useMemo } from 'react';
 import FilmList from '../../components/film-list/film-list';
+import GenreList from '../../components/genre-list/genre-list';
+import { ALL_GENRES } from '../../constants';
+import { useAppSelector } from '../../hooks';
 import { Film } from '../../types/film';
 
 type MaingPageProps = {
   filmTitle: string;
   filmGenre: string;
   releaseDate: string;
-  films: Film[];
-
 }
 
-function MainPage({filmTitle, filmGenre, releaseDate, films}: MaingPageProps): JSX.Element {
+function MainPage({filmTitle, filmGenre, releaseDate}: MaingPageProps): JSX.Element {
+  const {filmList, filteredFilms} = useAppSelector((state) => state);
+  const genres = useMemo(() => getUniqueGenre(filmList), [filmList]);
+
   return (
     <>
       <div className="visually-hidden">
@@ -109,41 +114,10 @@ function MainPage({filmTitle, filmGenre, releaseDate, films}: MaingPageProps): J
         <section className="catalog">
           <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-          <ul className="catalog__genres-list">
-            <li className="catalog__genres-item catalog__genres-item--active">
-              <a href="#" className="catalog__genres-link">All genres</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Comedies</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Crime</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Documentary</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Dramas</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Horror</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Kids & Family</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Romance</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Sci-Fi</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">Thrillers</a>
-            </li>
-          </ul>
+          <GenreList genres={genres} />
 
           <div className="catalog__films-list">
-            <FilmList films={films} />
+            <FilmList films={filteredFilms} />
           </div>
 
           <div className="catalog__more">
@@ -170,3 +144,13 @@ function MainPage({filmTitle, filmGenre, releaseDate, films}: MaingPageProps): J
 }
 
 export default MainPage;
+
+function getUniqueGenre(filmList: Film[]) {
+  const set = new Set<string>();
+  filmList.forEach(({ genre }) => {
+    set.add(genre);
+  });
+  const uniqueGenres = [ALL_GENRES, ...Array.from(set)];
+  return uniqueGenres;
+}
+
