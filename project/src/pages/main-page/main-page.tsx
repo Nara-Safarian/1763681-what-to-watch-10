@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import FilmList from '../../components/film-list/film-list';
 import GenreList from '../../components/genre-list/genre-list';
-import { ALL_GENRES } from '../../constants';
+import ShowMoreButton from '../../components/show-more-button/show-more-button';
+import { ALL_GENRES, FILMS_PER_STEP } from '../../constants';
 import { useAppSelector } from '../../hooks';
 import { Film } from '../../types/film';
 
@@ -14,6 +15,11 @@ type MaingPageProps = {
 function MainPage({filmTitle, filmGenre, releaseDate}: MaingPageProps): JSX.Element {
   const {filmList, filteredFilms} = useAppSelector((state) => state);
   const genres = useMemo(() => getUniqueGenre(filmList), [filmList]);
+  const [visibleFilms, setVisibleFilms] = useState(FILMS_PER_STEP);
+
+  useEffect(() => {
+    setVisibleFilms(FILMS_PER_STEP);
+  }, [filteredFilms]);
 
   return (
     <>
@@ -117,12 +123,16 @@ function MainPage({filmTitle, filmGenre, releaseDate}: MaingPageProps): JSX.Elem
           <GenreList genres={genres} />
 
           <div className="catalog__films-list">
-            <FilmList films={filteredFilms} />
+            <FilmList films={filteredFilms.slice(0, visibleFilms)} />
           </div>
 
-          <div className="catalog__more">
-            <button className="catalog__button" type="button">Show more</button>
-          </div>
+          {
+            visibleFilms < filteredFilms.length && (
+              <div className="catalog__more">
+                <ShowMoreButton onClick={() => setVisibleFilms(visibleFilms + FILMS_PER_STEP)} />
+              </div>
+            )
+          }
         </section>
 
         <footer className="page-footer">

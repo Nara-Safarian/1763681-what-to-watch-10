@@ -14,3 +14,5 @@ export enum AuthorizationStatus {
 }
 
 export const ALL_GENRES = 'All genres';
+
+export const FILMS_PER_STEP = 8;
