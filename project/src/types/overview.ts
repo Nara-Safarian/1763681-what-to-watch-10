@@ -1,7 +1,7 @@
 export type Rating = {
-  ratingScore: number;
+  rating: number;
   ratingLevel: string;
-  ratingCount: number;
+  scoresCount: number;
 }
 
 export type Overview = {

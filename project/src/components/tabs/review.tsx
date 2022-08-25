@@ -5,19 +5,19 @@ type ReviewProps = {
 };
 
 export default function Review({ review }: ReviewProps): JSX.Element {
-  const { text, userName, date, ratingScore } = review;
+  const { comment, user, date, rating } = review;
   return (
     <div className="review">
       <blockquote className="review__quote">
-        <p className="review__text">{text}</p>
+        <p className="review__text">{comment}</p>
 
         <footer className="review__details">
-          <cite className="review__author">{userName}</cite>
+          <cite className="review__author">{user.name}</cite>
           <time className="review__date" dateTime={date}>{date}</time>
         </footer>
       </blockquote>
 
-      <div className="review__rating">{ratingScore}</div>
+      <div className="review__rating">{rating}</div>
     </div>
   );
 }

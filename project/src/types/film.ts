@@ -1,16 +1,19 @@
-import { Details } from './details';
-import { Overview } from './overview';
-import { Review } from './review';
-import { Video } from './video';
-
 export type Film = {
-  id: number,
-  poster: string,
-  title: string,
-  genre: string,
-  releaseYear: string,
-  overview: Overview,
-  details: Details,
-  reviews: Review[],
-  video: Video
+  id: number;
+  name: string;
+  posterImage: string;
+  previewImage: string;
+  backgroundImage: string;
+  backgroundColor: string;
+  videoLink: string;
+  previewVideoLink: string;
+  description: string;
+  rating: number;
+  scoresCount: number;
+  director: string;
+  starring: string[];
+  runTime: number;
+  genre: string;
+  released: number;
+  isFavorite: boolean;
 }

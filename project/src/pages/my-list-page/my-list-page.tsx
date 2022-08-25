@@ -1,12 +1,10 @@
 import FilmList from '../../components/film-list/film-list';
-import { Film } from '../../types/film';
+import UserBlock from '../../components/user-block/user-block';
+import { useAppSelector } from '../../hooks';
 
-type MyListPageProps = {
-  films: Film[];
+function MyListPage(): JSX.Element {
+  const films = useAppSelector((state) => state.allFilms);
 
-}
-
-function MyListPage({films}: MyListPageProps): JSX.Element {
   return (
     <>
       <div className="visually-hidden">
@@ -49,16 +47,7 @@ function MyListPage({films}: MyListPageProps): JSX.Element {
           </div>
 
           <h1 className="page-title user-page__title">My list <span className="user-page__film-count">9</span></h1>
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar">
-                <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <a className="user-block__link">Sign out</a>
-            </li>
-          </ul>
+          <UserBlock />
         </header>
 
         <section className="catalog">

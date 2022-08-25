@@ -1,24 +1,19 @@
-import { Overview } from '../../types/overview';
+import { Film } from '../../types/film';
 
 type OverviewTabProps = {
-  overview: Overview;
+  film: Film
 }
 
-export default function OverviewTab({overview}: OverviewTabProps): JSX.Element {
-  const {
-    rating: {ratingCount, ratingLevel, ratingScore},
-    description,
-    director,
-    starring
-  } = overview;
+export default function OverviewTab({film}: OverviewTabProps): JSX.Element {
+  const {rating, scoresCount, director, starring, description} = film;
 
   return (
     <>
       <div className="film-rating">
-        <div className="film-rating__score">{ratingScore}</div>
+        <div className="film-rating__score">{rating}</div>
         <p className="film-rating__meta">
-          <span className="film-rating__level">{ratingLevel}</span>
-          <span className="film-rating__count">{ratingCount} rating{ratingCount > 1 ? 's' : ''}</span>
+          <span className="film-rating__level">{getRatingLevel(rating)}</span>
+          <span className="film-rating__count">{scoresCount} rating{scoresCount > 1 ? 's' : ''}</span>
         </p>
       </div>
 
@@ -31,4 +26,20 @@ export default function OverviewTab({overview}: OverviewTabProps): JSX.Element {
       </div>
     </>
   );
+}
+
+function getRatingLevel(rating: number): string {
+  if (rating < 3) {
+    return 'Bad';
+  }
+  if (rating < 5) {
+    return 'Normal';
+  }
+  if (rating < 8) {
+    return 'Good';
+  }
+  if (rating < 10) {
+    return 'Very good';
+  }
+  return 'Awesome';
 }
