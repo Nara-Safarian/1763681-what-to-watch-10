@@ -1,4 +1,55 @@
+import {useRef, FormEvent, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {loginAction} from '../../store/api-actions';
+import {AuthData} from '../../types/auth-data';
+import {AppRoute} from '../../constants';
+import {setError} from '../../store/action';
+
+const ERROR_BOX_CLASS = 'sign-in__field--error';
+
 function SignInPage(): JSX.Element {
+  const loginRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const error = useAppSelector((state) => state.error);
+  const [loginHasError, setLoginHasError] = useState(false);
+  const [passwordHasError, setPasswordHasError] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const onSubmit = (authData: AuthData) => {
+    dispatch(loginAction(authData));
+  };
+
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    dispatch(setError(null));
+    setLoginHasError(false);
+    setPasswordHasError(false);
+
+    if (loginRef.current !== null && passwordRef.current !== null) {
+      const login = loginRef.current.value;
+      if (!login.includes('@')) {
+        dispatch(setError('Please enter a valid email address'));
+        setLoginHasError(true);
+        return;
+      }
+
+      const password = passwordRef.current.value;
+      if (!(/\d/.test(password) && /[a-z]/i.test(password))) {
+        dispatch(setError('Password must include at least one number and one letter'));
+        setPasswordHasError(true);
+        return;
+      }
+
+      onSubmit({
+        login,
+        password,
+      });
+    }
+  };
+
   return (
     <>
       <div className="visually-hidden">
@@ -44,19 +95,50 @@ function SignInPage(): JSX.Element {
         </header>
 
         <div className="sign-in user-page__content">
-          <form action="#" className="sign-in__form">
+          <form
+            action="#"
+            className="sign-in__form"
+            onSubmit={handleSubmit}
+          >
+            {
+              error && (
+                <div className="sign-in__message">
+                  <p>{error}</p>
+                </div>
+              )
+            }
             <div className="sign-in__fields">
-              <div className="sign-in__field">
-                <input className="sign-in__input" type="email" placeholder="Email address" name="user-email" id="user-email" />
+              <div className={`sign-in__field ${loginHasError ? ERROR_BOX_CLASS : ''}`}>
+                <input
+                  ref={loginRef}
+                  className="sign-in__input"
+                  type="email"
+                  placeholder="Email address"
+                  name="user-email"
+                  id="user-email"
+                />
                 <label className="sign-in__label visually-hidden" htmlFor="user-email">Email address</label>
               </div>
-              <div className="sign-in__field">
-                <input className="sign-in__input" type="password" placeholder="Password" name="user-password" id="user-password" />
+              <div className={`sign-in__field ${passwordHasError ? ERROR_BOX_CLASS : ''}`}>
+                <input
+                  ref={passwordRef}
+                  className="sign-in__input"
+                  type="password"
+                  placeholder="Password"
+                  name="user-password"
+                  id="user-password"
+                />
                 <label className="sign-in__label visually-hidden" htmlFor="user-password">Password</label>
               </div>
             </div>
             <div className="sign-in__submit">
-              <button className="sign-in__btn" type="submit">Sign in</button>
+              <button
+                onClick={() => navigate(AppRoute.SignIn)}
+                className="sign-in__btn"
+                type="submit"
+              >
+                Sign in
+              </button>
             </div>
           </form>
         </div>

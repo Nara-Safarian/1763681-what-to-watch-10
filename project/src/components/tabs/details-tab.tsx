@@ -1,12 +1,13 @@
 import { Fragment } from 'react';
-import { Details } from '../../types/details';
+import { Film } from '../../types/film';
 
 type DetailsTabProp = {
-  details: Details;
+  film: Film;
 }
 
-export default function DetailsTab({details}: DetailsTabProp): JSX.Element {
-  const {director, starring, runTime, genre, releaseYear} = details;
+export default function DetailsTab({film}: DetailsTabProp): JSX.Element {
+  const {director, starring, runTime, genre, released} = film;
+
   return (
     <div className="film-card__text film-card__row">
       <div className="film-card__text-col">
@@ -42,7 +43,7 @@ export default function DetailsTab({details}: DetailsTabProp): JSX.Element {
         </p>
         <p className="film-card__details-item">
           <strong className="film-card__details-name">Released</strong>
-          <span className="film-card__details-value">{releaseYear}</span>
+          <span className="film-card__details-value">{released}</span>
         </p>
       </div>
     </div>

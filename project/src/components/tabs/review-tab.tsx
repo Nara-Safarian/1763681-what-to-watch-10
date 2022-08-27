@@ -1,13 +1,13 @@
-import { Review as ReviewType } from '../../types/review';
+import { Review as ReviewType} from '../../types/review';
 import Review from './review';
 
 type ReviewTabProps = {
-  reviews: ReviewType[];
+  reviews?: ReviewType[];
 };
 
-export default function ReviewTab({ reviews }: ReviewTabProps): JSX.Element | null {
-  if (reviews.length === 0) {
-    return null;
+export default function ReviewTab({ reviews }: ReviewTabProps): JSX.Element {
+  if (!reviews || reviews.length === 0) {
+    return (<span>Sorry. No reviews yet.</span>);
   }
 
   let column1: ReviewType[] = [];
@@ -24,10 +24,10 @@ export default function ReviewTab({ reviews }: ReviewTabProps): JSX.Element | nu
   return (
     <div className="film-card__reviews film-card__row">
       <div className="film-card__reviews-col">
-        {column1.map((review) => <Review review={review} key={`${review.date}-${review.userName}`} />)}
+        {column1.map((review) => <Review review={review} key={`${review.date}-${review.user.id}`} />)}
       </div>
       <div className="film-card__reviews-col">
-        {column2.map((review) => <Review review={review} key={`${review.date}-${review.userName}`} />)}
+        {column2.map((review) => <Review review={review} key={`${review.date}-${review.user.id}`} />)}
       </div>
     </div>
   );

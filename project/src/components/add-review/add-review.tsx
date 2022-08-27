@@ -1,58 +1,109 @@
-import {useState} from 'react';
+import { StatusCodes } from 'http-status-codes';
+import {useState, useMemo} from 'react';
+import { getFilmLink } from '../../constants';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { redirectToRoute, setError } from '../../store/action';
+import { addReviewAction } from '../../store/api-actions';
+import Rating from '../rating/rating';
 
-function AddReview(): JSX.Element {
+const MIN_STARS = 1;
+const MIN_COMMENT_LENGTH = 50;
 
-  const [reviewText, setReviewText] = useState('');
+type AddReviewProps = {
+  filmId: number | string;
+}
+
+function AddReview({filmId}: AddReviewProps): JSX.Element {
+  const error = useAppSelector((state) => state.error);
+  const dispatch = useAppDispatch();
+  const [formState, setFormState] = useState({
+    star: 0,
+    comment: '',
+    isPending: false,
+  });
+
+  const setComment = (comment: string) => {
+    setFormState((state) => ({
+      ...state,
+      comment
+    }));
+  };
+
+  const setStar = (star: number) => {
+    setFormState((state) => ({
+      ...state,
+      star
+    }));
+  };
+
+  const setIsPending = (isPending: boolean) => {
+    setFormState((state) => ({
+      ...state,
+      isPending
+    }));
+  };
 
   const handleReviewChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = evt.target.value;
-    setReviewText(value);
+    setComment(evt.target.value);
   };
+
+  const {star, comment, isPending} = formState;
+
+  const onSubmit = async (evt: React.MouseEvent<HTMLButtonElement>) => {
+    evt.preventDefault();
+    dispatch(setError(null));
+    setIsPending(true);
+    const result = await dispatch(addReviewAction({comment, rating: star, filmId}));
+    const status = result.payload as StatusCodes;
+
+    if (status === StatusCodes.OK) {
+      dispatch(redirectToRoute(getFilmLink(filmId)));
+      return;
+    }
+
+    setIsPending(false);
+    dispatch(setError('Oops .Something is wrong. Try again.'));
+  };
+
+  const isSubmitDisabled = useMemo(() => {
+    if (star < MIN_STARS) {
+      return true;
+    }
+
+    if (comment.length < MIN_COMMENT_LENGTH) {
+      return true;
+    }
+
+    return false;
+  }, [star, comment]);
 
 
   return (
     <div className="add-review">
       <form action="#" className="add-review__form">
-        <div className="rating">
-          <div className="rating__stars">
-            <input className="rating__input" id="star-10" type="radio" name="rating" value="10" />
-            <label className="rating__label" htmlFor="star-10">Rating 10</label>
-
-            <input className="rating__input" id="star-9" type="radio" name="rating" value="9" />
-            <label className="rating__label" htmlFor="star-9">Rating 9</label>
-
-            <input className="rating__input" id="star-8" type="radio" name="rating" value="8" checked />
-            <label className="rating__label" htmlFor="star-8">Rating 8</label>
-
-            <input className="rating__input" id="star-7" type="radio" name="rating" value="7" />
-            <label className="rating__label" htmlFor="star-7">Rating 7</label>
-
-            <input className="rating__input" id="star-6" type="radio" name="rating" value="6" />
-            <label className="rating__label" htmlFor="star-6">Rating 6</label>
-
-            <input className="rating__input" id="star-5" type="radio" name="rating" value="5" />
-            <label className="rating__label" htmlFor="star-5">Rating 5</label>
-
-            <input className="rating__input" id="star-4" type="radio" name="rating" value="4" />
-            <label className="rating__label" htmlFor="star-4">Rating 4</label>
-
-            <input className="rating__input" id="star-3" type="radio" name="rating" value="3" />
-            <label className="rating__label" htmlFor="star-3">Rating 3</label>
-
-            <input className="rating__input" id="star-2" type="radio" name="rating" value="2" />
-            <label className="rating__label" htmlFor="star-2">Rating 2</label>
-
-            <input className="rating__input" id="star-1" type="radio" name="rating" value="1" />
-            <label className="rating__label" htmlFor="star-1">Rating 1</label>
-          </div>
-        </div>
-
+        <Rating disabled={isPending} star={star} onClick={(ratingStar: number) => setStar(ratingStar)}/>
+        {error && <span>{error}</span>}
         <div className="add-review__text">
-          <textarea onChange={handleReviewChange} value={reviewText} className="add-review__textarea" name="review-text" id="review-text" placeholder="Review text"></textarea>
+          <textarea
+            onChange={handleReviewChange}
+            value={comment}
+            className="add-review__textarea"
+            name="review-text"
+            id="review-text"
+            placeholder="Review text"
+            disabled={isPending}
+          >
+          </textarea>
           <div className="add-review__submit">
-            <button className="add-review__btn" type="submit">Post</button>
+            <button
+              className="add-review__btn"
+              type="submit"
+              disabled={isSubmitDisabled}
+              onClick={onSubmit}
+            >
+              Post
+            </button>
           </div>
-
         </div>
       </form>
     </div>

@@ -1,4 +1,4 @@
-import { films } from '../../mocks/films';
+import { useAppSelector } from '../../hooks';
 import { Film } from '../../types/film';
 import FilmList from '../film-list/film-list';
 
@@ -10,6 +10,7 @@ type FilmListProps = {
 const FILM_LIMIT = 4;
 
 function SimilarFilmList({genre, currentIdFilm}: FilmListProps): JSX.Element {
+  const films = useAppSelector((state) => state.allFilms);
   const similarFilms = films.filter((film) => film.genre === genre && film.id !== currentIdFilm).slice(0, FILM_LIMIT);
 
   return (

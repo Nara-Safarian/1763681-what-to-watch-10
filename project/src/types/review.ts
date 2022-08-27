@@ -1,6 +1,10 @@
 export type Review = {
-  text: string;
-  ratingScore: number;
-  userName: string;
+  comment: string;
   date: string;
+  id: number;
+  rating: number;
+  user: {
+    id: number;
+    name: string;
+  }
 }

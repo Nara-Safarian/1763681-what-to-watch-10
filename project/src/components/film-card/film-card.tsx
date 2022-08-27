@@ -10,7 +10,9 @@ type FilmCardProps = {
   onMouseLeave: React.MouseEventHandler<HTMLElement>;
 }
 
-function FilmCard({film: {poster, title, id, video}, onMouseEnter, onMouseLeave, isVideoOn}: FilmCardProps): JSX.Element {
+function FilmCard({film, onMouseEnter, onMouseLeave, isVideoOn}: FilmCardProps): JSX.Element {
+  const {posterImage, name, id, videoLink, previewImage} = film;
+
   return (
     <article
       className="small-film-card catalog__films-card"
@@ -20,15 +22,15 @@ function FilmCard({film: {poster, title, id, video}, onMouseEnter, onMouseLeave,
       {
         isVideoOn
           ? (
-            <VideoPlayer src={video.url} poster={poster} autoPlay />
+            <VideoPlayer src={videoLink} poster={previewImage} autoPlay />
           )
           : (
             <>
               <div className="small-film-card__image">
-                <img src={poster} alt={title} width="280" height="175" />
+                <img src={posterImage} alt={name} width="280" height="175" />
               </div>
               <h3 className="small-film-card__title">
-                <Link className="small-film-card__link" to={`/films/${id}`}>{title}</Link>
+                <Link className="small-film-card__link" to={`/films/${id}`}>{name}</Link>
               </h3>
             </>
           )

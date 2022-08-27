@@ -1,11 +1,40 @@
+import { useEffect } from 'react';
+import { StatusCodes } from 'http-status-codes';
+import { useParams } from 'react-router-dom';
 import AddReview from '../../components/add-review/add-review';
+import UserBlock from '../../components/user-block/user-block';
+import { AppRoute } from '../../constants';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { redirectToRoute } from '../../store/action';
+import { fetchFilmAction } from '../../store/api-actions';
+import LoadingScreen from '../loading-screen/loading-screen';
 
-type AddReviewProps = {
-  posterSrc: string;
-  filmTitle: string;
-}
+function AddReviewPage(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const {id} = useParams();
+  const {currentFilm, errorStatus} = useAppSelector((state) => state);
+  const {posterImage, name} = currentFilm || {};
+  const isLoading = !currentFilm;
 
-function AddReviewPage({posterSrc, filmTitle}: AddReviewProps): JSX.Element {
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    dispatch(fetchFilmAction({id}));
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (errorStatus !== StatusCodes.NOT_FOUND) {
+      return;
+    }
+
+    dispatch(redirectToRoute(AppRoute.NotFound));
+  }, [errorStatus, dispatch]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <>
       <div className="visually-hidden">
@@ -40,7 +69,7 @@ function AddReviewPage({posterSrc, filmTitle}: AddReviewProps): JSX.Element {
       <section className="film-card film-card--full">
         <div className="film-card__header">
           <div className="film-card__bg">
-            <img src={posterSrc} alt={filmTitle} />
+            <img src={posterImage} alt={name} />
           </div>
 
           <h1 className="visually-hidden">WTW</h1>
@@ -57,7 +86,7 @@ function AddReviewPage({posterSrc, filmTitle}: AddReviewProps): JSX.Element {
             <nav className="breadcrumbs">
               <ul className="breadcrumbs__list">
                 <li className="breadcrumbs__item">
-                  <a href="film-page.html" className="breadcrumbs__link">{filmTitle}</a>
+                  <a href="film-page.html" className="breadcrumbs__link">{name}</a>
                 </li>
                 <li className="breadcrumbs__item">
                   <a className="breadcrumbs__link">Add review</a>
@@ -65,25 +94,16 @@ function AddReviewPage({posterSrc, filmTitle}: AddReviewProps): JSX.Element {
               </ul>
             </nav>
 
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                </div>
-              </li>
-              <li className="user-block__item">
-                <a className="user-block__link">Sign out</a>
-              </li>
-            </ul>
+            <UserBlock />
           </header>
 
           <div className="film-card__poster film-card__poster--small">
-            <img src={posterSrc} alt={filmTitle} width="218" height="327" />
+            <img src={posterImage} alt={name} width="218" height="327" />
           </div>
         </div>
-
-        <AddReview />
-
+        {
+          !!id && <AddReview filmId={id} />
+        }
       </section>
     </>
   );

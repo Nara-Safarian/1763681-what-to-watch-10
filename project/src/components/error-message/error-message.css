@@ -1,0 +1,9 @@
+.sign-in__error-message {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  padding: 10px;
+  background-color: #fcf7f7;
+  color: rgb(13, 0, 0);
+  border-radius: 5px;
+}

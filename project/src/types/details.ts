@@ -1,7 +1,7 @@
 export type Details = {
   director: string;
   starring: string[];
-  runTime: string;
+  runTime: number;
   genre: string;
-  releaseYear: string;
+  released: number;
 }

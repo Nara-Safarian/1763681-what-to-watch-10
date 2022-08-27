@@ -2,19 +2,15 @@ import { useEffect, useMemo, useState } from 'react';
 import FilmList from '../../components/film-list/film-list';
 import GenreList from '../../components/genre-list/genre-list';
 import ShowMoreButton from '../../components/show-more-button/show-more-button';
+import UserBlock from '../../components/user-block/user-block';
 import { ALL_GENRES, FILMS_PER_STEP } from '../../constants';
 import { useAppSelector } from '../../hooks';
 import { Film } from '../../types/film';
 
-type MaingPageProps = {
-  filmTitle: string;
-  filmGenre: string;
-  releaseDate: string;
-}
-
-function MainPage({filmTitle, filmGenre, releaseDate}: MaingPageProps): JSX.Element {
-  const {filmList, filteredFilms} = useAppSelector((state) => state);
-  const genres = useMemo(() => getUniqueGenre(filmList), [filmList]);
+function MainPage(): JSX.Element {
+  const {allFilms, filteredFilms, promoFilm} = useAppSelector((state) => state);
+  const {name, genre, released} = promoFilm || {};
+  const genres = useMemo(() => getUniqueGenre(allFilms), [allFilms]);
   const [visibleFilms, setVisibleFilms] = useState(FILMS_PER_STEP);
 
   useEffect(() => {
@@ -57,7 +53,7 @@ function MainPage({filmTitle, filmGenre, releaseDate}: MaingPageProps): JSX.Elem
 
       <section className="film-card">
         <div className="film-card__bg">
-          <img src="img/bg-the-grand-budapest-hotel.jpg" alt={filmTitle} />
+          <img src="img/bg-the-grand-budapest-hotel.jpg" alt={name} />
         </div>
 
         <h1 className="visually-hidden">WTW</h1>
@@ -71,29 +67,20 @@ function MainPage({filmTitle, filmGenre, releaseDate}: MaingPageProps): JSX.Elem
             </a>
           </div>
 
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar">
-                <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <a className="user-block__link">Sign out</a>
-            </li>
-          </ul>
+          <UserBlock />
         </header>
 
         <div className="film-card__wrap">
           <div className="film-card__info">
             <div className="film-card__poster">
-              <img src="img/the-grand-budapest-hotel-poster.jpg" alt={`${filmTitle} poster`} width="218" height="327" />
+              <img src="img/the-grand-budapest-hotel-poster.jpg" alt={`${name} poster`} width="218" height="327" />
             </div>
 
             <div className="film-card__desc">
-              <h2 className="film-card__title">{filmTitle}</h2>
+              <h2 className="film-card__title">{name}</h2>
               <p className="film-card__meta">
-                <span className="film-card__genre">{filmGenre}</span>
-                <span className="film-card__year">{releaseDate}</span>
+                <span className="film-card__genre">{genre}</span>
+                <span className="film-card__year">{released}</span>
               </p>
 
               <div className="film-card__buttons">
@@ -155,9 +142,9 @@ function MainPage({filmTitle, filmGenre, releaseDate}: MaingPageProps): JSX.Elem
 
 export default MainPage;
 
-function getUniqueGenre(filmList: Film[]) {
+function getUniqueGenre(allFilms: Film[]) {
   const set = new Set<string>();
-  filmList.forEach(({ genre }) => {
+  allFilms.forEach(({ genre }) => {
     set.add(genre);
   });
   const uniqueGenres = [ALL_GENRES, ...Array.from(set)];

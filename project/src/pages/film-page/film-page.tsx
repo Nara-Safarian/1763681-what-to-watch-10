@@ -1,13 +1,43 @@
+import { useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import SimilarFilmList from '../../components/similar-film-list/similar-film-list';
 import Tabs from '../../components/tabs/tabs';
-import { Film } from '../../types/film';
+import UserBlock from '../../components/user-block/user-block';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchFilmAction, fetchReviewsAction, fetchSimilarFilmsAction } from '../../store/api-actions';
+import LoadingScreen from '../loading-screen/loading-screen';
+import {StatusCodes} from 'http-status-codes';
+import { redirectToRoute } from '../../store/action';
+import { AppRoute, AuthorizationStatus, getAddReviewLink } from '../../constants';
 
-type FilmPageProps ={
-  film: Film
-}
+function FilmPage(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const {id} = useParams();
+  const {currentFilm, similarFilms, reviews, errorStatus, authorizationStatus} = useAppSelector((state) => state);
+  const isLogged = authorizationStatus === AuthorizationStatus.Auth;
+  const {posterImage, name, genre, released} = currentFilm || {};
+  const isLoading = !(currentFilm && similarFilms && reviews);
 
-function FilmPage({film}: FilmPageProps): JSX.Element {
-  const {poster, title, genre, releaseYear, id} = film;
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    dispatch(fetchFilmAction({id}));
+    dispatch(fetchReviewsAction({id}));
+    dispatch(fetchSimilarFilmsAction({id}));
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (errorStatus !== StatusCodes.NOT_FOUND) {
+      return;
+    }
+
+    dispatch(redirectToRoute(AppRoute.NotFound));
+  }, [errorStatus, dispatch]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
@@ -46,7 +76,7 @@ function FilmPage({film}: FilmPageProps): JSX.Element {
       <section className="film-card film-card--full">
         <div className="film-card__hero">
           <div className="film-card__bg">
-            <img src={poster} alt={title} />
+            <img src={posterImage} alt={name} />
           </div>
 
           <h1 className="visually-hidden">WTW</h1>
@@ -60,24 +90,15 @@ function FilmPage({film}: FilmPageProps): JSX.Element {
               </a>
             </div>
 
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                </div>
-              </li>
-              <li className="user-block__item">
-                <a className="user-block__link">Sign out</a>
-              </li>
-            </ul>
+            <UserBlock />
           </header>
 
           <div className="film-card__wrap">
             <div className="film-card__desc">
-              <h2 className="film-card__title">{title}</h2>
+              <h2 className="film-card__title">{name}</h2>
               <p className="film-card__meta">
                 <span className="film-card__genre">{genre}</span>
-                <span className="film-card__year">{releaseYear}</span>
+                <span className="film-card__year">{released}</span>
               </p>
 
               <div className="film-card__buttons">
@@ -94,7 +115,16 @@ function FilmPage({film}: FilmPageProps): JSX.Element {
                   <span>My list</span>
                   <span className="film-card__count">9</span>
                 </button>
-                <a href="add-review.html" className="btn film-card__button">Add review</a>
+                {
+                  isLogged && id && (
+                    <Link
+                      to={getAddReviewLink(id)}
+                      className="btn film-card__button"
+                    >
+                      Add review
+                    </Link>
+                  )
+                }
               </div>
             </div>
           </div>
@@ -103,13 +133,13 @@ function FilmPage({film}: FilmPageProps): JSX.Element {
         <div className="film-card__wrap film-card__translate-top">
           <div className="film-card__info">
             <div className="film-card__poster film-card__poster--big">
-              <img src={poster} alt={title} width="218" height="327" />
+              <img src={posterImage} alt={name} width="218" height="327" />
             </div>
-            <Tabs
-              overview={film.overview}
-              details={film.details}
-              reviews={film.reviews}
-            />
+            {
+              currentFilm && (
+                <Tabs film={currentFilm} reviews={reviews} />
+              )
+            }
           </div>
         </div>
       </section>
@@ -119,7 +149,11 @@ function FilmPage({film}: FilmPageProps): JSX.Element {
           <h2 className="catalog__title">More like this</h2>
 
           <div className="catalog__films-list">
-            <SimilarFilmList genre={genre} currentIdFilm={id} />
+            {
+              currentFilm && (
+                <SimilarFilmList genre={currentFilm.genre} currentIdFilm={currentFilm.id} />
+              )
+            }
           </div>
         </section>
 

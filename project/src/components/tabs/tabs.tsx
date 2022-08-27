@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { Details } from '../../types/details';
-import { Overview } from '../../types/overview';
-import { Review as ReviewType } from '../../types/review';
+import { Film } from '../../types/film';
+import { Review } from '../../types/review';
 import DetailsTab from './details-tab';
 import { CurrentTab } from './enums';
 import OverviewTab from './overview-tab';
 import ReviewTab from './review-tab';
 
 type TabsProps = {
-  overview: Overview,
-  details: Details,
-  reviews: ReviewType[]
+  film: Film;
+  reviews?: Review[];
 }
 
 const activeTabClass = 'film-nav__item--active';
@@ -30,7 +28,7 @@ const TABS = [
   },
 ];
 
-function Tabs({overview, details, reviews}: TabsProps): JSX.Element {
+function Tabs({film, reviews}: TabsProps): JSX.Element {
   const [currentTab, setCurrentTab] = useState(CurrentTab.Overview);
 
   return (
@@ -60,12 +58,12 @@ function Tabs({overview, details, reviews}: TabsProps): JSX.Element {
       </nav>
       {
         currentTab === CurrentTab.Overview && (
-          <OverviewTab overview={overview} />
+          <OverviewTab film={film} />
         )
       }
       {
         currentTab === CurrentTab.Details && (
-          <DetailsTab details={details} />
+          <DetailsTab film={film} />
         )
       }
       {
