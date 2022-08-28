@@ -1,9 +1,17 @@
+import { useEffect } from 'react';
 import FilmList from '../../components/film-list/film-list';
 import UserBlock from '../../components/user-block/user-block';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { getFavoriteFilmsAction } from '../../store/api-actions';
+import { getFavoriteFilms } from '../../store/films/selectors';
 
 function MyListPage(): JSX.Element {
-  const films = useAppSelector((state) => state.allFilms);
+  const films = useAppSelector(getFavoriteFilms);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getFavoriteFilmsAction());
+  }, [dispatch]);
 
   return (
     <>
@@ -46,7 +54,7 @@ function MyListPage(): JSX.Element {
             </a>
           </div>
 
-          <h1 className="page-title user-page__title">My list <span className="user-page__film-count">9</span></h1>
+          <h1 className="page-title user-page__title">My list <span className="user-page__film-count">{films.length}</span></h1>
           <UserBlock />
         </header>
 

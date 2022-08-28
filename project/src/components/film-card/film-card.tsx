@@ -11,7 +11,7 @@ type FilmCardProps = {
 }
 
 function FilmCard({film, onMouseEnter, onMouseLeave, isVideoOn}: FilmCardProps): JSX.Element {
-  const {posterImage, name, id, videoLink, previewImage} = film;
+  const {posterImage, name, id} = film;
 
   return (
     <article
@@ -22,7 +22,7 @@ function FilmCard({film, onMouseEnter, onMouseLeave, isVideoOn}: FilmCardProps):
       {
         isVideoOn
           ? (
-            <VideoPlayer src={videoLink} poster={previewImage} autoPlay />
+            <VideoPlayer film={film} autoPlay />
           )
           : (
             <>

@@ -1,21 +1,42 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import FilmList from '../../components/film-list/film-list';
 import GenreList from '../../components/genre-list/genre-list';
+import MyListButton from '../../components/my-list-button/my-list-button';
 import ShowMoreButton from '../../components/show-more-button/show-more-button';
 import UserBlock from '../../components/user-block/user-block';
-import { ALL_GENRES, FILMS_PER_STEP } from '../../constants';
-import { useAppSelector } from '../../hooks';
+import { ALL_GENRES, FILMS_PER_STEP, getPlayerLink } from '../../constants';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { redirectToRoute } from '../../store/action';
+import { getPromoFilmAction } from '../../store/api-actions';
+import { getAllFilms, getFilteredFilms, getPromoFilm } from '../../store/films/selectors';
 import { Film } from '../../types/film';
 
 function MainPage(): JSX.Element {
-  const {allFilms, filteredFilms, promoFilm} = useAppSelector((state) => state);
-  const {name, genre, released} = promoFilm || {};
+  const allFilms = useAppSelector(getAllFilms);
+  const filteredFilms = useAppSelector(getFilteredFilms);
+  const promoFilm = useAppSelector(getPromoFilm);
+  const dispatch = useAppDispatch();
+
+  const {name, genre, released, posterImage, id} = promoFilm || {};
   const genres = useMemo(() => getUniqueGenre(allFilms), [allFilms]);
   const [visibleFilms, setVisibleFilms] = useState(FILMS_PER_STEP);
 
   useEffect(() => {
+    dispatch(getPromoFilmAction());
+  }, [dispatch]);
+
+  useEffect(() => {
     setVisibleFilms(FILMS_PER_STEP);
   }, [filteredFilms]);
+
+  const handlePlayClick = useCallback(() => {
+    if (!id) {
+      return;
+    }
+
+    dispatch(redirectToRoute(getPlayerLink(id)));
+  }, [id, dispatch]);
+
 
   return (
     <>
@@ -73,7 +94,7 @@ function MainPage(): JSX.Element {
         <div className="film-card__wrap">
           <div className="film-card__info">
             <div className="film-card__poster">
-              <img src="img/the-grand-budapest-hotel-poster.jpg" alt={`${name} poster`} width="218" height="327" />
+              <img src={`${posterImage}`} alt={`${name} poster`} width="218" height="327" />
             </div>
 
             <div className="film-card__desc">
@@ -84,19 +105,13 @@ function MainPage(): JSX.Element {
               </p>
 
               <div className="film-card__buttons">
-                <button className="btn btn--play film-card__button" type="button">
+                <button className="btn btn--play film-card__button" type="button" onClick={handlePlayClick}>
                   <svg viewBox="0 0 19 19" width="19" height="19">
                     <use xlinkHref="#play-s"></use>
                   </svg>
                   <span>Play</span>
                 </button>
-                <button className="btn btn--list film-card__button" type="button">
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                  <span className="film-card__count">9</span>
-                </button>
+                <MyListButton id={id?.toString()} />
               </div>
             </div>
           </div>

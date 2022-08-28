@@ -1,7 +1,8 @@
 import {getToken} from './token';
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError} from 'axios';
 import {StatusCodes} from 'http-status-codes';
-import {processErrorHandle} from './process-error-handle';
+import {handleError} from './handle-error';
+import {X_TOKEN_HEADER_NAME} from '../constants';
 
 const StatusCodeMapping: Record<number, boolean> = {
   [StatusCodes.BAD_REQUEST]: true,
@@ -10,7 +11,6 @@ const StatusCodeMapping: Record<number, boolean> = {
 };
 
 const shouldDisplayError = (response: AxiosResponse) => !!StatusCodeMapping[response.status];
-
 
 const BACKEND_URL = 'https://10.react.pages.academy/wtw';
 const REQUEST_TIMEOUT = 5000;
@@ -26,7 +26,7 @@ export const createAPI = (): AxiosInstance => {
       const token = getToken();
 
       if (token) {
-        config.headers['x-token'] = token;
+        config.headers[X_TOKEN_HEADER_NAME] = token;
       }
 
       return config;
@@ -37,7 +37,7 @@ export const createAPI = (): AxiosInstance => {
     (response) => response,
     (error: AxiosError) => {
       if (error.response && shouldDisplayError(error.response)) {
-        processErrorHandle(error.response.data.error, error.response.status);
+        handleError(error.response.data.error, error.response.status);
       }
 
       throw error;

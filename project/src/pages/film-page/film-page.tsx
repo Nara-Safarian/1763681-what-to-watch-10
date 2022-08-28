@@ -1,19 +1,27 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import SimilarFilmList from '../../components/similar-film-list/similar-film-list';
 import Tabs from '../../components/tabs/tabs';
 import UserBlock from '../../components/user-block/user-block';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchFilmAction, fetchReviewsAction, fetchSimilarFilmsAction } from '../../store/api-actions';
+import { fetchFilmAction, fetchReviewsAction, fetchSimilarFilmsAction, getFavoriteFilmsAction } from '../../store/api-actions';
 import LoadingScreen from '../loading-screen/loading-screen';
 import {StatusCodes} from 'http-status-codes';
 import { redirectToRoute } from '../../store/action';
-import { AppRoute, AuthorizationStatus, getAddReviewLink } from '../../constants';
+import { AppRoute, AuthorizationStatus, getAddReviewLink, getPlayerLink } from '../../constants';
+import { getCurrentFilm, getReviews, getSimilarFilms } from '../../store/films/selectors';
+import { getErrorStatus } from '../../store/app-interface/selectors';
+import { getAuthorizationStatus } from '../../store/user/selectors';
+import MyListButton from '../../components/my-list-button/my-list-button';
 
 function FilmPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const {id} = useParams();
-  const {currentFilm, similarFilms, reviews, errorStatus, authorizationStatus} = useAppSelector((state) => state);
+  const currentFilm = useAppSelector(getCurrentFilm);
+  const similarFilms = useAppSelector(getSimilarFilms);
+  const reviews = useAppSelector(getReviews);
+  const errorStatus = useAppSelector(getErrorStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const isLogged = authorizationStatus === AuthorizationStatus.Auth;
   const {posterImage, name, genre, released} = currentFilm || {};
   const isLoading = !(currentFilm && similarFilms && reviews);
@@ -25,7 +33,9 @@ function FilmPage(): JSX.Element {
     dispatch(fetchFilmAction({id}));
     dispatch(fetchReviewsAction({id}));
     dispatch(fetchSimilarFilmsAction({id}));
+    dispatch(getFavoriteFilmsAction());
   }, [id, dispatch]);
+
 
   useEffect(() => {
     if (errorStatus !== StatusCodes.NOT_FOUND) {
@@ -34,6 +44,14 @@ function FilmPage(): JSX.Element {
 
     dispatch(redirectToRoute(AppRoute.NotFound));
   }, [errorStatus, dispatch]);
+
+  const handlePlayClick = useCallback(() => {
+    if (!id) {
+      return;
+    }
+
+    dispatch(redirectToRoute(getPlayerLink(id)));
+  }, [id, dispatch]);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -102,19 +120,13 @@ function FilmPage(): JSX.Element {
               </p>
 
               <div className="film-card__buttons">
-                <button className="btn btn--play film-card__button" type="button">
+                <button className="btn btn--play film-card__button" type="button" onClick={handlePlayClick}>
                   <svg viewBox="0 0 19 19" width="19" height="19">
                     <use xlinkHref="#play-s"></use>
                   </svg>
                   <span>Play</span>
                 </button>
-                <button className="btn btn--list film-card__button" type="button">
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                  <span className="film-card__count">9</span>
-                </button>
+                <MyListButton id={id} />
                 {
                   isLogged && id && (
                     <Link
@@ -151,7 +163,7 @@ function FilmPage(): JSX.Element {
           <div className="catalog__films-list">
             {
               currentFilm && (
-                <SimilarFilmList genre={currentFilm.genre} currentIdFilm={currentFilm.id} />
+                <SimilarFilmList films={similarFilms} />
               )
             }
           </div>
