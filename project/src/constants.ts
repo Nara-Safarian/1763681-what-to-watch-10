@@ -4,6 +4,10 @@ export const FILMS_PER_STEP = 8;
 
 export const TIMEOUT_SHOW_ERROR = 10000;
 
+export const X_TOKEN_HEADER_NAME = 'x-token';
+
+export const DEFAULT_AVATAR_URL = 'img/avatar.jpg';
+
 export enum AppRoute {
   Main = '/',
   SignIn = '/login',
@@ -11,7 +15,7 @@ export enum AppRoute {
   Film = '/films/:id',
   AddReview = '/films/:id/review',
   Player = '/player/:id',
-  NotFound = '/404'
+  NotFound = '/404',
 }
 
 export function getAddReviewLink(id: string | number) {
@@ -20,6 +24,10 @@ export function getAddReviewLink(id: string | number) {
 
 export function getFilmLink(id: string | number) {
   return `/films/${id}`;
+}
+
+export function getPlayerLink(id: string | number) {
+  return `/player/${id}`;
 }
 
 
@@ -36,4 +44,11 @@ export enum APIRoute {
   Reviews = '/comments',
   Login = '/login',
   Logout = '/logout',
+  MyList = '/favorite',
+}
+
+export enum NameSpace {
+  Films = 'FILMS',
+  AppInterface = 'APP_INTERFACE',
+  User = 'USER',
 }

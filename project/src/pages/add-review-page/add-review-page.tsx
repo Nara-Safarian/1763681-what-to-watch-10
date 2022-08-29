@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import { StatusCodes } from 'http-status-codes';
 import { useParams } from 'react-router-dom';
 import AddReview from '../../components/add-review/add-review';
@@ -8,11 +8,14 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { redirectToRoute } from '../../store/action';
 import { fetchFilmAction } from '../../store/api-actions';
 import LoadingScreen from '../loading-screen/loading-screen';
+import { getCurrentFilm } from '../../store/films/selectors';
+import { getErrorStatus } from '../../store/app-interface/selectors';
 
 function AddReviewPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const {id} = useParams();
-  const {currentFilm, errorStatus} = useAppSelector((state) => state);
+  const currentFilm = useAppSelector(getCurrentFilm);
+  const errorStatus = useAppSelector(getErrorStatus);
   const {posterImage, name} = currentFilm || {};
   const isLoading = !currentFilm;
 
@@ -109,4 +112,4 @@ function AddReviewPage(): JSX.Element {
   );
 }
 
-export default AddReviewPage;
+export default memo(AddReviewPage);

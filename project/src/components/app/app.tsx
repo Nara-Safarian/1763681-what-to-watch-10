@@ -13,11 +13,14 @@ import browserHistory from '../../browser-history';
 import {useAppSelector} from '../../hooks';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import {isCheckedAuth} from '../../utils';
+import { getAuthorizationStatus } from '../../store/user/selectors';
+import { getIsLoading } from '../../store/app-interface/selectors';
 
 function App(): JSX.Element {
-  const {authorizationStatus, isDataLoaded} = useAppSelector((state) => state);
+  const isLoading = useAppSelector(getIsLoading);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
 
-  if (isCheckedAuth(authorizationStatus) || isDataLoaded) {
+  if (isCheckedAuth(authorizationStatus) || isLoading) {
     return (
       <LoadingScreen />
     );

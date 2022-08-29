@@ -8,3 +8,38 @@ export function getRandomNumber(min: number, max: number) {
 
 export const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
+
+const SECONDS_IN_MINUTE = 60;
+const SECONDS_IN_HOUR = 3600;
+const TEN = 10;
+
+export function toHHMMSS(secs = 0): string {
+  if (!secs) {
+    return '00:00';
+  }
+
+  const secsInt = parseInt(secs.toString(), 10);
+  const hours = Math.floor(secsInt / SECONDS_IN_HOUR);
+  const minutes = Math.floor((secsInt - (hours * SECONDS_IN_HOUR)) / SECONDS_IN_MINUTE);
+  const seconds = secsInt - (hours * SECONDS_IN_HOUR) - (minutes * SECONDS_IN_MINUTE);
+
+  const secondsStr = seconds < TEN ? `0${seconds}` : seconds;
+  const minutesStr = minutes < TEN ? `0${minutes}` : minutes;
+
+  if (secs < SECONDS_IN_HOUR) {
+    return `${minutesStr}:${secondsStr}`;
+  }
+
+  const hoursStr = hours < TEN ? `0${hours}` : hours;
+
+  return `${hoursStr}:${minutesStr}:${secondsStr}`;
+}
+
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+export function formatDate(date: string) {
+  const newDate = new Date(date);
+  const month = MONTH_NAMES[newDate.getMonth()];
+  const day = newDate.getDate();
+  const year = newDate.getFullYear();
+  return `${month} ${day}, ${year}`;
+}

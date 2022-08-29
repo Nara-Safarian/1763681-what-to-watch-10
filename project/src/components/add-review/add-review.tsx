@@ -1,12 +1,12 @@
-import { StatusCodes } from 'http-status-codes';
 import {useState, useMemo} from 'react';
 import { getFilmLink } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { redirectToRoute, setError } from '../../store/action';
 import { addReviewAction } from '../../store/api-actions';
+import { getError } from '../../store/app-interface/selectors';
 import Rating from '../rating/rating';
 
-const MIN_STARS = 1;
+const MIN_STARS_COUNT = 1;
 const MIN_COMMENT_LENGTH = 50;
 
 type AddReviewProps = {
@@ -14,7 +14,7 @@ type AddReviewProps = {
 }
 
 function AddReview({filmId}: AddReviewProps): JSX.Element {
-  const error = useAppSelector((state) => state.error);
+  const error = useAppSelector(getError);
   const dispatch = useAppDispatch();
   const [formState, setFormState] = useState({
     star: 0,
@@ -49,14 +49,14 @@ function AddReview({filmId}: AddReviewProps): JSX.Element {
 
   const {star, comment, isPending} = formState;
 
-  const onSubmit = async (evt: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (evt: React.MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     dispatch(setError(null));
     setIsPending(true);
     const result = await dispatch(addReviewAction({comment, rating: star, filmId}));
-    const status = result.payload as StatusCodes;
+    const isSuccess = result.payload as boolean;
 
-    if (status === StatusCodes.OK) {
+    if (isSuccess) {
       dispatch(redirectToRoute(getFilmLink(filmId)));
       return;
     }
@@ -66,7 +66,7 @@ function AddReview({filmId}: AddReviewProps): JSX.Element {
   };
 
   const isSubmitDisabled = useMemo(() => {
-    if (star < MIN_STARS) {
+    if (star < MIN_STARS_COUNT) {
       return true;
     }
 
@@ -99,7 +99,7 @@ function AddReview({filmId}: AddReviewProps): JSX.Element {
               className="add-review__btn"
               type="submit"
               disabled={isSubmitDisabled}
-              onClick={onSubmit}
+              onClick={handleSubmit}
             >
               Post
             </button>

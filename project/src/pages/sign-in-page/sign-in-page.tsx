@@ -5,13 +5,14 @@ import {loginAction} from '../../store/api-actions';
 import {AuthData} from '../../types/auth-data';
 import {AppRoute} from '../../constants';
 import {setError} from '../../store/action';
+import { getError } from '../../store/app-interface/selectors';
 
 const ERROR_BOX_CLASS = 'sign-in__field--error';
 
 function SignInPage(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
-  const error = useAppSelector((state) => state.error);
+  const error = useAppSelector(getError);
   const [loginHasError, setLoginHasError] = useState(false);
   const [passwordHasError, setPasswordHasError] = useState(false);
 
