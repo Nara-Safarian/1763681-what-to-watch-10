@@ -1,6 +1,6 @@
 import { useEffect, memo } from 'react';
 import { StatusCodes } from 'http-status-codes';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import AddReview from '../../components/add-review/add-review';
 import UserBlock from '../../components/user-block/user-block';
 import { AppRoute } from '../../constants';
@@ -79,11 +79,11 @@ function AddReviewPage(): JSX.Element {
 
           <header className="page-header">
             <div className="logo">
-              <a href="/" className="logo__link">
+              <Link to="/" className="logo__link">
                 <span className="logo__letter logo__letter--1">W</span>
                 <span className="logo__letter logo__letter--2">T</span>
                 <span className="logo__letter logo__letter--3">W</span>
-              </a>
+              </Link>
             </div>
 
             <nav className="breadcrumbs">

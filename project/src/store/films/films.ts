@@ -15,7 +15,7 @@ export const films = createSlice({
   extraReducers(builder) {
     builder
       .addCase(changeGenre, (state, action) => {
-        state.currentGenre = action.payload;
+        state.currentGenre = action.payload || ALL_GENRES;
       })
 
       .addCase(loadFilms, (state, action) => {

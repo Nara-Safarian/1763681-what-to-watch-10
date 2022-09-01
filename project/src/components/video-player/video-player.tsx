@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import browserHistory from '../../browser-history';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { Film } from '../../types/film';
-import { toHHMMSS } from '../../utils';
+import { formatTime } from '../../utils';
 
 type VideoPlayerProps = {
   autoPlay?: boolean;
@@ -33,7 +33,7 @@ function VideoPlayer({autoPlay = false, fullScreen = false, film}: VideoPlayerPr
       const duration = videoRef.current.duration;
       const currentTime = videoRef.current.currentTime;
       const remainingTimeSec = duration - currentTime;
-      setRemainingTime(toHHMMSS(remainingTimeSec));
+      setRemainingTime(formatTime(remainingTimeSec));
       setCurrentPercents(currentTime * 100 / duration);
     };
 

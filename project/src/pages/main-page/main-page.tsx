@@ -6,7 +6,7 @@ import ShowMoreButton from '../../components/show-more-button/show-more-button';
 import UserBlock from '../../components/user-block/user-block';
 import { ALL_GENRES, FILMS_PER_STEP, getPlayerLink } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { redirectToRoute } from '../../store/action';
+import { changeGenre, redirectToRoute } from '../../store/action';
 import { getPromoFilmAction } from '../../store/api-actions';
 import { getAllFilms, getFilteredFilms, getPromoFilm } from '../../store/films/selectors';
 import { Film } from '../../types/film';
@@ -22,6 +22,7 @@ function MainPage(): JSX.Element {
   const [visibleFilms, setVisibleFilms] = useState(FILMS_PER_STEP);
 
   useEffect(() => {
+    dispatch(changeGenre());
     dispatch(getPromoFilmAction());
   }, [dispatch]);
 
