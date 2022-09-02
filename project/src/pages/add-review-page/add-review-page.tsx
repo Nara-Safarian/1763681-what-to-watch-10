@@ -92,7 +92,7 @@ function AddReviewPage(): JSX.Element {
                   <a href="film-page.html" className="breadcrumbs__link">{name}</a>
                 </li>
                 <li className="breadcrumbs__item">
-                  <a className="breadcrumbs__link">Add review</a>
+                  <span className="breadcrumbs__link">Add review</span>
                 </li>
               </ul>
             </nav>

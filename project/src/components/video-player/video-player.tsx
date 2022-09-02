@@ -24,6 +24,7 @@ function VideoPlayer({autoPlay = false, fullScreen = false, film}: VideoPlayerPr
     if (!videoRef.current) {
       return;
     }
+    const ref = videoRef.current;
 
     const handleLoadedData = () => setIsLoading(false);
     const handleTimeUpdate = () => {
@@ -40,11 +41,8 @@ function VideoPlayer({autoPlay = false, fullScreen = false, film}: VideoPlayerPr
     videoRef.current.addEventListener('loadeddata', handleLoadedData);
     videoRef.current.addEventListener('timeupdate', handleTimeUpdate);
     return () => {
-      if (!videoRef.current) {
-        return;
-      }
-      videoRef.current.removeEventListener('loadeddata', handleLoadedData);
-      videoRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+      ref.removeEventListener('loadeddata', handleLoadedData);
+      ref.removeEventListener('timeupdate', handleTimeUpdate);
     };
   }, [fullScreen]);
 
@@ -75,10 +73,10 @@ function VideoPlayer({autoPlay = false, fullScreen = false, film}: VideoPlayerPr
 
     if (videoRef.current.requestFullscreen) {
       videoRef.current.requestFullscreen();
-    } else if ((videoRef.current as any).webkitRequestFullscreen) { /* Safari */
-      (videoRef.current as any).webkitRequestFullscreen();
-    } else if ( (videoRef.current as any).msRequestFullscreen) { /* IE11 */
-      (videoRef.current as any).msRequestFullscreen();
+    } else if (videoRef.current.webkitRequestFullscreen) { /* Safari */
+      videoRef.current.webkitRequestFullscreen();
+    } else if (videoRef.current.msRequestFullscreen) { /* IE11 */
+      videoRef.current.msRequestFullscreen();
     }
   }, []);
 

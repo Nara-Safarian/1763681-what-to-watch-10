@@ -41,16 +41,14 @@ function Tabs({film, reviews}: TabsProps): JSX.Element {
                 className={`film-nav__item ${currentTab === name ? activeTabClass : ''}`}
                 key={name}
               >
-                <a
-                  href="#"
+                <span
                   className="film-nav__link"
                   onClick={(event) => {
-                    event.preventDefault();
                     setCurrentTab(name);
                   }}
                 >
                   {title}
-                </a>
+                </span>
               </li>
             ))
           }

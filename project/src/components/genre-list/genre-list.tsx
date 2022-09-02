@@ -17,16 +17,14 @@ function GenreList({genres}: GenreListProps): JSX.Element {
       {
         genres.map((genre) => (
           <li key={genre} className={`catalog__genres-item ${currentGenre === genre ? activeGenreClass : ''}`}>
-            <a
-              href="#"
+            <span
               className="catalog__genres-link"
               onClick={(event) => {
-                event.preventDefault();
                 dispatch(changeGenre(genre));
               }}
             >
               {genre}
-            </a>
+            </span>
           </li>
         ))
       }
